@@ -1,10 +1,3 @@
-/**
- * @file trainer.h
- * @brief Training orchestrator for CIFAR-10 Autoencoder
- * @details Handles data loading, training loops, evaluation, and feature extraction
- * Phase 1 CPU baseline implementation
- */
-
 #ifndef TRAINER_H
 #define TRAINER_H
 
@@ -14,15 +7,6 @@
 #include "autoencoder.h"
 #include <vector>
 
-/**
- * @brief Training orchestrator for autoencoder model
- * @details Manages complete training pipeline including:
- * - CIFAR-10 dataset loading and preprocessing
- * - Training loop with batch processing
- * - Model evaluation and performance tracking
- * - Feature extraction for SVM integration
- * - Model persistence (save/load)
- */
 class Trainer
 {
 private:
@@ -47,17 +31,7 @@ private:
     Timer timer;                      // Performance timer
 
 public:
-    /**
-     * @brief Constructor - Initialize trainer with hyperparameters
-     * @param batch_size Training batch size (default: 32)
-     * @param epochs Number of training epochs (default: 20)
-     * @param lr Learning rate for SGD (default: 0.001)
-     */
     Trainer(int batch_size = 32, int epochs = 20, real_t lr = 0.001f);
-
-    /**
-     * @brief Destructor - Automatic cleanup
-     */
     ~Trainer();
 
     // Initialize dataset and model
@@ -65,7 +39,7 @@ public:
 
     // Training functions
     void train();
-    real_t train_epoch(int epoch);
+    real_t train_epoch();
     real_t evaluate_model();
 
     // Feature extraction

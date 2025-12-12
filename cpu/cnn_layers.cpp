@@ -1,10 +1,3 @@
-/**
- * @file cnn_layers.cpp
- * @brief CPU implementations of CNN layers for autoencoder
- * @details Contains Conv2D, ReLU, MaxPool2D, Upsampling2D, and MSELoss implementations
- * Optimized for Phase 1 baseline performance
- */
-
 #include "cnn_layers.h"
 #include "../common/utils.h"
 #include <algorithm>
@@ -18,14 +11,6 @@ namespace cpu_layers
     // Conv2D Layer Implementation
     //=============================================================================
 
-    /**
-     * @brief Constructor for 2D Convolution layer
-     * @param input_channels Number of input feature maps
-     * @param output_channels Number of output feature maps
-     * @param kernel_size Size of convolution kernel (kernel_size x kernel_size)
-     * @param stride Stride for convolution operation
-     * @param padding Zero-padding size
-     */
     Conv2D::Conv2D(int input_channels, int output_channels, int kernel_size, int stride, int padding)
         : weights(output_channels, input_channels, kernel_size), stride(stride), padding(padding),
           input_channels(input_channels), output_channels(output_channels), kernel_size(kernel_size)
@@ -33,14 +18,6 @@ namespace cpu_layers
         weights.initialize(); // Xavier initialization by default
     }
 
-    /**
-     * @brief Forward pass of 2D Convolution
-     * @param input Input tensor [batch_size, height, width, channels]
-     * @param output Output tensor [batch_size, output_h, output_w, output_channels]
-     *
-     * Performs: output = Conv2D(input) + bias
-     * Uses zero-padding and configurable stride
-     */
     void Conv2D::forward(const Tensor4D &input, Tensor4D &output)
     {
         // Extract input dimensions
@@ -96,16 +73,6 @@ namespace cpu_layers
         }
     }
 
-    /**
-     * @brief Backward pass of 2D Convolution (for training)
-     * @param input Original input tensor
-     * @param grad_output Gradient from next layer
-     * @param grad_input Computed gradient w.r.t input (output)
-     * @param grad_weights Computed gradient w.r.t weights (output)
-     * @param grad_bias Computed gradient w.r.t bias (output)
-     *
-     * Computes gradients for backpropagation using chain rule
-     */
     void Conv2D::backward(const Tensor4D &input, const Tensor4D &grad_output,
                           Tensor4D &grad_input, Tensor4D &grad_weights, Tensor4D &grad_bias)
     {
@@ -167,25 +134,12 @@ namespace cpu_layers
         }
     }
 
-    /**
-     * @brief Calculate output spatial dimensions for convolution
-     * @param input_h Input height
-     * @param input_w Input width
-     * @param output_h Calculated output height (output)
-     * @param output_w Calculated output width (output)
-     *
-     * Formula: output_size = (input_size + 2*padding - kernel_size) / stride + 1
-     */
     void Conv2D::calculate_output_size(int input_h, int input_w, int &output_h, int &output_w) const
     {
         output_h = (input_h + 2 * padding - weights.kernel_size) / stride + 1;
         output_w = (input_w + 2 * padding - weights.kernel_size) / stride + 1;
     }
 
-    /**
-     * @brief Get total number of trainable parameters
-     * @return Total parameter count (weights + bias)
-     */
     size_t Conv2D::parameter_count() const
     {
         const size_t weight_params = weights.output_channels * weights.input_channels *
@@ -194,10 +148,6 @@ namespace cpu_layers
         return weight_params + bias_params;
     }
 
-    /**
-     * @brief Initialize weights using different strategies
-     * @param method Initialization method: "xavier", "he", or "zero"
-     */
     void Conv2D::initialize_weights(const std::string &method)
     {
         if (method == "xavier" || method == "glorot")
@@ -229,15 +179,6 @@ namespace cpu_layers
     //=============================================================================
     // ReLU Activation Layer Implementation
     //=============================================================================
-
-    /**
-     * @brief Forward pass of ReLU activation
-     * @param input Input tensor
-     * @param output Output tensor (same size as input)
-     *
-     * Applies: f(x) = max(0, x) element-wise
-     * ReLU introduces non-linearity and helps with gradient flow
-     */
     void ReLU::forward(const Tensor4D &input, Tensor4D &output)
     {
         output.resize(input.batch_size, input.height, input.width, input.channels);
@@ -250,14 +191,6 @@ namespace cpu_layers
         }
     }
 
-    /**
-     * @brief Backward pass of ReLU activation
-     * @param input Original input tensor
-     * @param grad_output Gradient from next layer
-     * @param grad_input Computed gradient w.r.t input (output)
-     *
-     * ReLU derivative: df/dx = 1 if x > 0, else 0
-     */
     void ReLU::backward(const Tensor4D &input, const Tensor4D &grad_output, Tensor4D &grad_input)
     {
         grad_input.resize(input.batch_size, input.height, input.width, input.channels);
@@ -274,23 +207,10 @@ namespace cpu_layers
     // MaxPool2D Layer Implementation
     //=============================================================================
 
-    /**
-     * @brief Constructor for 2D Max Pooling layer
-     * @param pool_size Size of pooling window (pool_size x pool_size)
-     * @param stride Stride for pooling operation
-     */
     MaxPool2D::MaxPool2D(int pool_size, int stride) : pool_size(pool_size), stride(stride)
     {
     }
 
-    /**
-     * @brief Forward pass of 2D Max Pooling
-     * @param input Input tensor [batch_size, height, width, channels]
-     * @param output Output tensor [batch_size, pooled_h, pooled_w, channels]
-     *
-     * Reduces spatial dimensions by taking maximum value in each pooling window
-     * Provides translation invariance and reduces computational load
-     */
     void MaxPool2D::forward(const Tensor4D &input, Tensor4D &output)
     {
         int batch_size = input.batch_size;

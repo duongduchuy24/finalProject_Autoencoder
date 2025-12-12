@@ -17,7 +17,7 @@ private:
 
     // Helper functions for binary file parsing
     bool read_binary_file(const std::string &filename, std::vector<Tensor4D> &images,
-                          std::vector<int> &labels, bool is_test_batch = false);
+                          std::vector<int> &labels);
     void parse_cifar_record(const std::vector<uchar> &buffer, int offset,
                             Tensor4D &image, int &label);
 

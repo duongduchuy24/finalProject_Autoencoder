@@ -1,17 +1,3 @@
-/**
- * @file autoencoder.h
- * @brief CPU-based CIFAR-10 Autoencoder implementation
- * @details Phase 1 baseline with encoder-decoder architecture
- *
- * Architecture Overview:
- * - Input: 32x32x3 RGB images
- * - Encoder: Conv2D + ReLU + MaxPool layers (3->256->128 channels)
- * - Latent: 8x8x128 = 8,192 features
- * - Decoder: Conv2D + ReLU + Upsampling layers (128->256->3 channels)
- * - Output: 32x32x3 reconstructed images
- * - Total Parameters: ~751,875 trainable parameters
- */
-
 #ifndef AUTOENCODER_H
 #define AUTOENCODER_H
 
@@ -21,17 +7,6 @@
 #include <memory>
 #include <vector>
 
-/**
- * @brief CPU implementation of CIFAR-10 Autoencoder
- * @details Complete encoder-decoder architecture for image reconstruction
- *
- * Key Features:
- * - Encoder: Compresses 32x32x3 -> 8x8x128
- * - Decoder: Reconstructs 8x8x128 -> 32x32x3
- * - MSE Loss for reconstruction training
- * - Feature extraction capability for SVM
- * - Smart pointer memory management
- */
 class CPUAutoencoder
 {
 private:
@@ -64,36 +39,18 @@ private:
     //=========================================================================
     std::unique_ptr<cpu_layers::MSELoss> loss_fn; // Mean squared error loss
     std::vector<Tensor4D> activations;            // Intermediate activations storage
+    std::vector<Tensor4D> layer_weight_grads;     // Gradient storage for weights
+    std::vector<Tensor4D> layer_bias_grads;       // Gradient storage for biases
     real_t learning_rate;                         // SGD learning rate
 
 public:
-    /**
-     * @brief Constructor - Initialize complete autoencoder architecture
-     * @param lr Learning rate for training (default: 0.001)
-     */
     CPUAutoencoder(real_t lr = 0.001f);
-
-    /**
-     * @brief Destructor - Automatic cleanup via smart pointers
-     */
     ~CPUAutoencoder();
 
     //=========================================================================
     // CORE FUNCTIONALITY
     //=========================================================================
-
-    /**
-     * @brief Complete forward pass (encode + decode)
-     * @param input Input batch [batch_size, 32, 32, 3]
-     * @param output Reconstructed output [batch_size, 32, 32, 3]
-     */
     void forward(const Tensor4D &input, Tensor4D &output);
-
-    /**
-     * @brief Encoder-only forward pass for feature extraction
-     * @param input Input batch [batch_size, 32, 32, 3]
-     * @param encoded Latent features [batch_size, 8, 8, 128]
-     */
     void encode(const Tensor4D &input, Tensor4D &encoded);
 
     // Backward pass and weight update

@@ -62,7 +62,7 @@ bool CIFAR10Dataset::load_dataset(const std::string &data_path)
 
     // Load test batch
     std::string test_filename = data_path + "/test_batch.bin";
-    if (!read_binary_file(test_filename, test_images, test_labels, true))
+    if (!read_binary_file(test_filename, test_images, test_labels))
     {
         std::cerr << "Failed to load test batch" << std::endl;
         return false;
@@ -77,8 +77,7 @@ bool CIFAR10Dataset::load_dataset(const std::string &data_path)
 
 bool CIFAR10Dataset::read_binary_file(const std::string &filename,
                                       std::vector<Tensor4D> &images,
-                                      std::vector<int> &labels,
-                                      bool is_test_batch)
+                                      std::vector<int> &labels)
 {
     std::ifstream file(filename, std::ios::binary);
     if (!file)

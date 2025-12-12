@@ -1,10 +1,3 @@
-/**
- * @file utils.h
- * @brief Utility classes and functions for CIFAR-10 Autoencoder
- * @details Performance timing, random number generation, file I/O utilities
- * Cross-platform compatible implementations
- */
-
 #ifndef UTILS_H
 #define UTILS_H
 
@@ -22,29 +15,17 @@
 // PERFORMANCE TIMING
 //=============================================================================
 
-/**
- * @brief High-resolution timer for performance measurement
- * @details Uses std::chrono for accurate timing measurements
- * Useful for profiling training epochs and individual operations
- */
 class Timer
 {
 private:
     std::chrono::high_resolution_clock::time_point start_time; ///< Timer start point
 
 public:
-    /**
-     * @brief Start timing measurement
-     */
     void start()
     {
         start_time = std::chrono::high_resolution_clock::now();
     }
 
-    /**
-     * @brief Get elapsed time since start() was called
-     * @return Elapsed time in milliseconds
-     */
     double elapsed() const
     {
         auto end_time = std::chrono::high_resolution_clock::now();
